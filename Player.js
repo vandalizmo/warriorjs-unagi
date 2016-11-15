@@ -14,7 +14,8 @@ class Player {
    _safeActions = ['rest', 'walk'];
    _enemyType = null;
 
-   _exploreStrategy = ['backward', 'forward'];
+   _exploreStrategy = ['forward', 'backward'];
+   // _exploreStrategy = ['backward', 'forward'];
    // _exploreStrategy = ['forward'];
    _exploreCurrentDirection = null;
 
@@ -48,6 +49,13 @@ class Player {
 
       warrior.walk(direction);
       this.actionLog('retreat');
+   }
+
+   pivot2(warrior, direction) {
+      direction = direction || this.backwardDirection(this._exploreCurrentDirection);
+
+      warrior.pivot(direction);
+      this.actionLog('pivot');
    }
 
    attack2(warrior, direction) {
@@ -120,8 +128,9 @@ class Player {
       }
 
       if (f.isWall()) {
-         this.getNextExploreStrategy();
-         action = null;
+         // this.getNextExploreStrategy();
+         // action = null;
+         action = this.pivot2;
       }
 
       return { action: action, direction: direction};
