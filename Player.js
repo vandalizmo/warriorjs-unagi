@@ -43,6 +43,13 @@ class Player {
       this.actionLog('walk');
    }
 
+   retreat2(warrior, direction) {
+      direction = direction || this.backwardDirection(this._exploreCurrentDirection);
+
+      warrior.walk(direction);
+      this.actionLog('retreat');
+   }
+
    attack2(warrior, direction) {
       direction = direction || this._exploreCurrentDirection;
 
@@ -53,7 +60,7 @@ class Player {
    rescue2(warrior, direction) {
       direction = direction || this._exploreCurrentDirection;
 
-      // warrior.rescue(direction);
+      warrior.rescue(direction);
       this.actionLog('rescue');
    }
 
@@ -97,25 +104,24 @@ class Player {
             action = this.attack2;
          } else {
             if (warrior.health() <= 9) {
-               action = this.walk2;
-               direction = this.backwardDirection();
+               action = this.retreat2;
             } else {
                action = this.attack2;
             }
          }
       }
 
+      if (f.isStairs()) {
+         action = this.walk2;
+      }
+
       if (f.isCaptive()) {
-         action = this.rescue;
+         action = this.rescue2;
       }
 
       if (f.isWall()) {
          this.getNextExploreStrategy();
          action = null;
-      }
-
-      if (f.isStairs()) {
-         action = this.walk2;
       }
 
       return { action: action, direction: direction};
