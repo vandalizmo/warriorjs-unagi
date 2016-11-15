@@ -99,6 +99,10 @@ class Player {
          }
       }
 
+      if (f.isStairs()) {
+         action = this.walk2;
+      }
+
       if (f.isEnemy()) {
          if (this._rangeAttack) {
             action = this.attack2;
@@ -109,10 +113,6 @@ class Player {
                action = this.attack2;
             }
          }
-      }
-
-      if (f.isStairs()) {
-         action = this.walk2;
       }
 
       if (f.isCaptive()) {
