@@ -14,8 +14,8 @@ class Player {
    _safeActions = ['rest', 'walk2'];
    _enemyType = null;
 
-   // _exploreStrategy = ['backward', 'forward'];
-   _exploreStrategy = ['forward'];
+   _exploreStrategy = ['backward', 'forward'];
+   // _exploreStrategy = ['forward'];
    _exploreCurrentDirection = null;
 
    constructor() {
@@ -43,11 +43,11 @@ class Player {
       this.actionLog('walk2');
    }
 
-   attack(warrior, direction) {
+   attack2(warrior, direction) {
       direction = direction || this._exploreCurrentDirection;
 
-      // warrior.attack(direction);
-      this.actionLog('attack');
+      warrior.attack(direction);
+      this.actionLog('attack2');
    }
 
    rescue(warrior, direction) {
@@ -78,31 +78,29 @@ class Player {
       var action = null;
       var direction = null;
 
-      return { action: this.walk2, direction: null};
-
-      // var f = warrior.feel(this._exploreCurrentDirection);
+      var f = warrior.feel(this._exploreCurrentDirection);
 
       if (f.isEmpty()) {
          if (this._rangeAttack) {
-            action = this.walk;
+            action = this.walk2;
          } else {
             // if (warrior.health() < this._maxWarriorHealth) {
             //    action = this.rest;
             // } else {
-            //    action = this.walk;
+               action = this.walk2;
             // }
          }
       }
 
       if (f.isEnemy()) {
          if (this._rangeAttack) {
-            action = this.attack;
+            action = this.attack2;
          } else {
             // if (warrior.health() <= 9) {
             //    action = this.walk;
             //    direction = this.backwardDirection();
             // } else {
-            //    action = this.attack;
+               action = this.attack2;
             // }
          }
       }
@@ -117,7 +115,7 @@ class Player {
       }
 
       if (f.isStairs()) {
-         action = this.walk;
+         action = this.walk2;
       }
 
       return { action: action, direction: direction};
