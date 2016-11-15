@@ -11,7 +11,7 @@ class Player {
    _lostHealth = false;
    _killedEnemy = false;
 
-   _safeActions = ['rest', 'walk2'];
+   _safeActions = ['rest2', 'walk2'];
    _enemyType = null;
 
    _exploreStrategy = ['backward', 'forward'];
@@ -31,9 +31,9 @@ class Player {
       this._actionHistory.push(this._lastAction);
    }
 
-   rest(warrior) {
-      // warrior.rest();
-      this.actionLog('rest');
+   rest2(warrior) {
+      warrior.rest();
+      this.actionLog('rest2');
    }
 
    walk2(warrior, direction) {
@@ -50,11 +50,11 @@ class Player {
       this.actionLog('attack2');
    }
 
-   rescue(warrior, direction) {
+   rescue2(warrior, direction) {
       direction = direction || this._exploreCurrentDirection;
 
       // warrior.rescue(direction);
-      this.actionLog('rescue');
+      this.actionLog('rescue2');
    }
 
    backwardDirection(direction) {
@@ -84,11 +84,11 @@ class Player {
          if (this._rangeAttack) {
             action = this.walk2;
          } else {
-            // if (warrior.health() < this._maxWarriorHealth) {
-            //    action = this.rest;
-            // } else {
+            if (warrior.health() < this._maxWarriorHealth) {
+               action = this.rest2;
+            } else {
                action = this.walk2;
-            // }
+            }
          }
       }
 
@@ -96,12 +96,12 @@ class Player {
          if (this._rangeAttack) {
             action = this.attack2;
          } else {
-            // if (warrior.health() <= 9) {
-            //    action = this.walk;
-            //    direction = this.backwardDirection();
-            // } else {
+            if (warrior.health() <= 9) {
+               action = this.walk2;
+               direction = this.backwardDirection();
+            } else {
                action = this.attack2;
-            // }
+            }
          }
       }
 
@@ -122,11 +122,11 @@ class Player {
    }
 
    playTurn(warrior) {    
-      // if (warrior.health() < this._health) {
-      //    this._lostHealth = true;
-      // } else {
-      //    this._lostHealth = false;
-      // }
+      if (warrior.health() < this._health) {
+         this._lostHealth = true;
+      } else {
+         this._lostHealth = false;
+      }
 
       if (this._safeActions.includes(this._lastAction) && this._lostHealth) {
          this._rangeAttack = true;
@@ -146,7 +146,7 @@ class Player {
 
       decision.action.call(this, warrior, decision.direction);
 
-      // this._health = warrior.health();
+      this._health = warrior.health();
       this._killedEnemy = false;
    }
 }
