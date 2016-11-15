@@ -11,7 +11,7 @@ class Player {
    _lostHealth = false;
    _killedEnemy = false;
 
-   _safeActions = ['rest2', 'walk2'];
+   _safeActions = ['rest', 'walk'];
    _enemyType = null;
 
    _exploreStrategy = ['backward', 'forward'];
@@ -33,28 +33,28 @@ class Player {
 
    rest2(warrior) {
       warrior.rest();
-      this.actionLog('rest2');
+      this.actionLog('rest');
    }
 
    walk2(warrior, direction) {
       direction = direction || this._exploreCurrentDirection;
 
       warrior.walk(direction);
-      this.actionLog('walk2');
+      this.actionLog('walk');
    }
 
    attack2(warrior, direction) {
       direction = direction || this._exploreCurrentDirection;
 
       warrior.attack(direction);
-      this.actionLog('attack2');
+      this.actionLog('attack');
    }
 
    rescue2(warrior, direction) {
       direction = direction || this._exploreCurrentDirection;
 
       // warrior.rescue(direction);
-      this.actionLog('rescue2');
+      this.actionLog('rescue');
    }
 
    backwardDirection(direction) {
