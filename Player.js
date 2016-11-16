@@ -14,9 +14,9 @@ class Player {
    _safeActions = ['rest', 'walk'];
    _enemyType = null;
 
-   _exploreStrategy = ['forward', 'backward'];
+   // _exploreStrategy = ['forward', 'backward'];
    // _exploreStrategy = ['backward', 'forward'];
-   // _exploreStrategy = ['forward'];
+   _exploreStrategy = ['forward'];
    _exploreCurrentDirection = null;
 
    constructor() {
@@ -65,6 +65,13 @@ class Player {
       this.actionLog('attack');
    }
 
+   shoot2(warrior, direction) {
+      direction = direction || this._exploreCurrentDirection;
+
+      warrior.shoot(direction);
+      this.actionLog('shoot');
+   }
+
    rescue2(warrior, direction) {
       direction = direction || this._exploreCurrentDirection;
 
@@ -89,11 +96,22 @@ class Player {
       return backwardDirection;
    }
 
+   isEnemyInSight(warrior) {
+      const unit = warrior.look().find(space => !space.isEmpty());
+      return unit && unit.isEnemy();
+   }
+
    decide(warrior) {
       var action = null;
       var direction = null;
 
       var f = warrior.feel(this._exploreCurrentDirection);
+      var l = warrior.look(this._exploreCurrentDirection);
+
+      var v = l.reduce(function(a, s) {
+         return a.concat(s.isStairs() ? '>' : s.isCaptive() ? 'C' : s.isEnemy() ? 'e' : s.isWall() ? '#' : s.isEmpty() ? '_' : '?');
+      }, ' ');
+      console.log(v);
 
       if (f.isEmpty()) {
          if (this._rangeAttack) {
@@ -131,6 +149,10 @@ class Player {
          // this.getNextExploreStrategy();
          // action = null;
          action = this.pivot2;
+      }
+
+      if (this.isEnemyInSight(warrior)) {
+         action = this.shoot2;
       }
 
       return { action: action, direction: direction};
