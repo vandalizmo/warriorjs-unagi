@@ -19,6 +19,9 @@ class Player {
    _exploreStrategy = ['forward'];
    _exploreCurrentDirection = null;
 
+   _shootForwardBackwardAlternate = false;
+   _lastShotDirection = 'forward';
+
    constructor() {
       this.getNextExploreStrategy();
    }
@@ -96,8 +99,10 @@ class Player {
       return backwardDirection;
    }
 
-   isEnemyInSight(warrior) {
-      const unit = warrior.look().find(space => !space.isEmpty());
+   isEnemyInSight(warrior, direction) {
+      direction = direction || this._exploreCurrentDirection;
+
+      const unit = warrior.look(direction).find(space => !space.isEmpty());
       return unit && unit.isEnemy();
    }
 
@@ -106,12 +111,18 @@ class Player {
       var direction = null;
 
       var f = warrior.feel(this._exploreCurrentDirection);
-      var l = warrior.look(this._exploreCurrentDirection);
+      var lookBackward = warrior.look(this.backwardDirection());
+      var lookForward = warrior.look(this._exploreCurrentDirection);
 
-      var v = l.reduce(function(a, s) {
+      var viewBackward = lookBackward.reduce(function(a, s) {
          return a.concat(s.isStairs() ? '>' : s.isCaptive() ? 'C' : s.isEnemy() ? 'e' : s.isWall() ? '#' : s.isEmpty() ? '_' : '?');
-      }, ' ');
-      console.log(v);
+      }, '');
+
+      var viewForward = lookForward.reduce(function(a, s) {
+         return a.concat(s.isStairs() ? '>' : s.isCaptive() ? 'C' : s.isEnemy() ? 'e' : s.isWall() ? '#' : s.isEmpty() ? '_' : '?');
+      }, '');
+
+      console.log('%s@%s', viewBackward.split('').reverse().join(''), viewForward);
 
       if (f.isEmpty()) {
          if (this._rangeAttack) {
@@ -153,6 +164,16 @@ class Player {
 
       if (this.isEnemyInSight(warrior)) {
          action = this.shoot2;
+      }
+
+      if (this.isEnemyInSight(warrior, this.backwardDirection())) {
+         action = this.shoot2;
+         direction = this.backwardDirection();
+      }
+
+      if (this.isEnemyInSight(warrior) && this.isEnemyInSight(warrior, this.backwardDirection())) {
+         direction = this.backwardDirection(this._lastShotDirection);
+         this._lastShotDirection = direction;
       }
 
       return { action: action, direction: direction};
